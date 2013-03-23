@@ -1,28 +1,24 @@
 (ns leiningen.scalac
-  (:require [leiningen.core.eval :as eval])
-  (:import (org.apache.tools.ant.types Path)))
+  (:require [leiningen.classpath :as classpath]
+            [leiningen.core.eval :as eval]))
 
-(defn task-props [project]
+(defn- task-props [project]
   (merge {:srcdir (:scala-source-path project)
           :destdir (:compile-path project)}
          (:scalac-options project)))
 
-(defn- scalac-compile-form [project]
+(defn- scalac-compile-form [project classpath]
   `(do
      (import scala.tools.ant.Scalac)
-     (println "ok")
+     (import org.apache.tools.ant.types.Path)
 
      (.addTaskDefinition lancet/ant-project "scalac" scala.tools.ant.Scalac)
-     (println "ok1")
 
-     ;(lancet/define-ant-task ant-scalac scalac)
-     ;(println "ok2")
+     (lancet/define-ant-task ~'ant-scalac ~'scalac)
 
-     (let [proj-classpath# (classpath/get-classpath-string project)
-           task# (doto (lancet/instantiate-task lancet/ant-project "scalac"
-                                               (task-props project))
-                  (.setClasspath (Path. lancet/ant-project proj-classpath#)))]
-       (lancet/mkdir {:dir (:compile-path project)})
+     (let [task# (doto (lancet/instantiate-task lancet/ant-project "scalac" ~(task-props project))
+                   (.setClasspath (Path. lancet/ant-project ~classpath)))]
+       (lancet/mkdir {:dir ~(:compile-path project)})
        (.execute task#))))
 
 (defn scalac
@@ -31,15 +27,21 @@
 Set :scalac-options in project.clj to pass options to the Scala compiler.
 See http://www.scala-lang.org/node/98 for details."
   [project]
-  (println project)
-  (let [depped-proj (update-in project [:dependencies] conj ['lancet "1.0.1"])]
+  (let [scala-version (:scala-version project)
+        depped-proj (update-in project [:dependencies] concat
+                               [['lancet "1.0.1"]
+                                ['org.scala-lang/scala-compiler scala-version]
+                                ['org.clojure/clojure "1.5.0"]])
+        ;;depped-proj project
+        classpath (classpath/get-classpath-string depped-proj)]
+
     (eval/eval-in-project
 
      ;; pass in the project.
      depped-proj
 
      ;; the actual compilation task.
-     (scalac-compile-form depped-proj)
+     (scalac-compile-form depped-proj classpath)
 
      ;; imports to avoid Garibaldi's Issue.
      '(require '[lancet.core :as lancet]))))
