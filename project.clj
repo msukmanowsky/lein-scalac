@@ -1,7 +1,7 @@
-(defproject io.tomw/lein-scalac "0.1.1"
+(defproject io.tomw/lein-scalac "0.1.2"
   :description "Compile Scala using Leiningen. (Fork of https://github.com/technomancy/lein-scalac)"
 
-  :eval-in-leiningen true
+  :eval-in-project true
   :dependencies [[lancet "1.0.1"]]
 
   :license {:name "Eclipse Public License"
