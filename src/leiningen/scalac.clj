@@ -1,5 +1,6 @@
 (ns leiningen.scalac
   (:require [leiningen.classpath :as classpath]
+            [leiningen.core.main :as lein]
             [leiningen.core.eval :as eval]))
 
 (defn- task-props [project]
@@ -27,6 +28,9 @@
 Set :scalac-options in project.clj to pass options to the Scala compiler.
 See http://www.scala-lang.org/node/98 for details."
   [project]
+  (if (not (:scala-version project))
+           (lein/abort "lein scalac: You must specify a :scala-version key in your project.clj"))
+
   (let [scala-version (:scala-version project)
         depped-proj (update-in project [:dependencies] concat
                                [['lancet "1.0.1"]
