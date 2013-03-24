@@ -1,6 +1,6 @@
 package test
 
-object Test {
+object Core {
   def main (args: Array[String]) {
     println("Hello from Scala!")
   }
