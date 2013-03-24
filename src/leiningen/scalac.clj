@@ -35,6 +35,7 @@ See http://www.scala-lang.org/node/98 for details."
         depped-proj (update-in project [:dependencies] concat
                                [['lancet "1.0.1"]
                                 ['org.scala-lang/scala-compiler scala-version]
+                                ['org.scala-lang/scala-library  scala-version]
                                 ['org.clojure/clojure "1.5.0"]])
         ;;depped-proj project
         classpath (classpath/get-classpath-string depped-proj)]
