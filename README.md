@@ -18,7 +18,7 @@ You must include the version of the scala compiler you want to use in your proje
 
 ## Thanks
 
-Many thanks to Phil and Stu Halloway for doing all the hard work.
+Many thanks to Phil Hagelberg and Stu Halloway for doing all the hard work.
 
 ## License
 
