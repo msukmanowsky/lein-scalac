@@ -30,6 +30,8 @@ See http://www.scala-lang.org/node/98 for details."
   [project]
   (if (not (:scala-version project))
            (lein/abort "lein scalac: You must specify a :scala-version key in your project.clj"))
+  (if (not (:scala-source-path project))
+           (lein/abort "lein scalac: You must specify a :scala-source-path key in your project.clj"))
 
   (let [scala-version (:scala-version project)
         depped-proj (update-in project [:dependencies] concat
